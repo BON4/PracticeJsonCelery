@@ -56,8 +56,10 @@ class UserCreateView(CreateView):
         return JsonResponse(data)
 
 
-class UserDeleteForm(View):
+@method_decorator(csrf_exempt, name='dispatch')
+class UserDeleteView(View):
     def post(self, request, pk):
+        print('{0}------------'.format(pk))
         data = {}
         user = User.objects.get(pk=pk)
         if user:
