@@ -1,0 +1,27 @@
+{% extends 'Test/Index.html' %}
+{% load staticfiles %}
+{%block main%}
+<table class="table table-bordered" id="myTable">
+    <thead>
+        <th>
+            Id
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Email
+        </th>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div id="roomform">
+    <button id="createUser" class="btn"> Create User </button>
+</div>
+{% endblock main %}
+
+{%block extrajs%}
+<script src="{% static 'js/ajax_test.js' %}"></script>
+{%endblock extrajs%}

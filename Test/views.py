@@ -9,13 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView
 
 
-class HomeView(View):
-
-    def get(self, request):
-        context = {}
-        return render(request, 'Test/Home.html', context)
-
-
 class UserDetailView(View):
 
     def get(self, request, pk):
@@ -28,11 +21,11 @@ class UserDetailView(View):
 class UserListView(View):
     def get(self, request):
         users = list(User.objects.all().values())
-        data = {}
+        data = []
         for i in users:
-            data[i['id']] = {'name': i['name'], 'email': i['email']}
+            data.append({'id': i['id'], 'name': i['name'], 'email': i['email']})
 
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
 
 class UserUpdateView(View):
