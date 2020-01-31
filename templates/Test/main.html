@@ -1,6 +1,7 @@
 {% extends 'Test/Index.html' %}
 {% load staticfiles %}
 {%block main%}
+<form method="POST" id="myForm"></form>
 <table class="table table-bordered" id="myTable">
     <thead>
         <th>
@@ -18,7 +19,7 @@
 </table>
 
 <div id="roomform">
-    <button id="createUser" class="btn"> Create User </button>
+    <button id="createUser" class="btn createBtn"> Create User </button>
 </div>
 {% endblock main %}
 

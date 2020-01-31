@@ -23,26 +23,73 @@ $(document).ready(function () {
            data.forEach(user =>{
                rows += `
                <tr>
-                    <td>${user.id}</td>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                    <td>
+                    <td><input readonly="True" form="myForm" type="text" value="${user.id}"/></td>
+                    <td><input id="nameInput${user.id}" form="myForm" type="text" value="${user.name}"/></td>
+                    <td><input id="emailInput${user.id}" form="myForm" type="text" value="${user.email}"/></td>
+                    <td> 
                     <button class="btn deleteBtn" data-id="${user.id}">Delete</button>
                     </td>
                     <td>
-                    <button class="btn updateBtn" data-id="${user.id}">Update</button>
+                    <button class="btn updateBtn" 
+                    data-id="${user.id}">
+                    Update
+                    </button>
                     </td>
                </tr>`;
            });
+           rows +=`<tr>
+                        <td></td>
+                        <td><input id="name_create" type="text" value=""/></td>
+                        <td><input id="email_create" type="text" value=""/></td>
+                   </tr>
+                    `;
            $('#myTable').append(rows);
            $('.deleteBtn').each((i, element) =>{
                $(element).on('click', (e) => {
                    deleteUser($(element))
                })
-           })
+           });
+           $('.updateBtn').each((i, element) =>{
+               $(element).on('click', (e) => {
+                   updateUser($(element))
+               })
+           });
+
+           $('.createBtn').on('click', function (e) {
+               userName = document.getElementById('name_create').value;
+               userEmail = document.getElementById('email_create').value;
+
+                $.ajax({
+                    url: `/users/create/`,
+                    type:'POST',
+                    data: {'name': userName, 'email': userEmail},
+                    dataType: 'json',
+                    success: function (data) {
+                       let rows =``;
+                       rows = `<tr>
+                                    <td><input readonly="True" form="myForm" type="text" value="${data['id']}"/></td>
+                                    <td><input id="nameInput${data['id']}" form="myForm" type="text" value="${data['name']}"/></td>
+                                    <td><input id="emailInput${data['id']}" form="myForm" type="text" value="${data['email']}"/></td>
+                                    <td> 
+                                    <button class="btn deleteBtn" data-id="${data['id']}">Delete</button>
+                                    </td>
+                                    <td>
+                                    <button class="btn updateBtn" 
+                                    data-id="${data['id']}">
+                                    Update
+                                    </button>
+                                    </td>
+                               </tr>`;
+                       $('#myTable').append(rows);
+                    }
+
+                });
+           });
        }
     });
 });
+
+
 
 function deleteUser(element) {
     userId = $(element).data('id');
@@ -54,6 +101,25 @@ function deleteUser(element) {
             $(element).parents()[1].remove()
         }
     });
+}
+
+function updateUser(element) {
+    userId = $(element).data('id');
+    userName = document.getElementById(`nameInput${userId}`).value;
+    userEmail = document.getElementById(`emailInput${userId}`).value;
+    $.ajax({
+        url:`/users/update/${userId}`,
+        type: 'POST',
+        data: {'id': userId, 'name': userName, 'email': userEmail},
+        dataType: 'json',
+        success: function (data) {
+            $(element).data('id').replaceWith(data['id']);
+            $(element).data('name').replaceWith(data['name']);
+            $(element).data('email').replaceWith(data['email']);
+        }
+
+    });
+
 }
 
 function getCookie(c_name)
