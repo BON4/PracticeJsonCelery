@@ -1,10 +1,16 @@
 from celery import shared_task
-import time
+from django.core.mail import send_mail
 import logging
 
 logger = logging.getLogger(__name__)
-@shared_task
-def test_task(text):
-    logger.info("HHHHHHH")
 
-    return text.upper()
+
+@shared_task
+def test_task(id, email, text):
+    send_mail(
+        subject='Subject',
+        message=text,
+        from_email='myemail@mail.com',
+        recipient_list=[email]
+    )
+

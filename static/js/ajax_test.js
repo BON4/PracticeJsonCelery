@@ -24,7 +24,7 @@ $(document).ready(function () {
            data.forEach(user =>{
                rows += `
                <tr>
-                    <td><input id="checkbox${user.id}" type="checkbox" name="foo"/></td>
+                    <td><input id="${user.id}" type="checkbox" name="checkbox"/></td>
                     <td><input readonly="True" form="myForm" type="text" value="${user.id}"/></td>
                     <td><input id="nameInput${user.id}" form="myForm" type="text" value="${user.name}"/></td>
                     <td><input id="emailInput${user.id}" form="myForm" type="text" value="${user.email}"/></td>
@@ -71,7 +71,7 @@ $(document).ready(function () {
                     success: function (data) {
                        let rows =``;
                        rows = `<tr>
-                                    <td><input id="checkbox${data['id']}" type="checkbox" name="foo"/></td>
+                                    <td><input id="${data['id']}" type="checkbox" name="checkbox"/></td>
                                     <td><input readonly="True" form="myForm" type="text" value="${data['id']}"/></td>
                                     <td><input id="nameInput${data['id']}" form="myForm" type="text" value="${data['name']}"/></td>
                                     <td><input id="emailInput${data['id']}" form="myForm" type="text" value="${data['email']}"/></td>
@@ -92,23 +92,32 @@ $(document).ready(function () {
            });
            
            $(".sendBtn").on("click", function () {
-               if(document.getElementById("loader").hidden == true)
-               {
+               if(document.getElementById("loader").hidden == true) {
                    document.getElementById("loader").hidden = false;
                }
-                sendEmail()
+               var emails=[];
+               var json_data = [];
+               checkboxes = document.getElementsByName('checkbox');
+                  for(var i=0, n=checkboxes.length;i<n;i++) {
+                      emails.push(document.getElementById(`emailInput${checkboxes[i].id}`));
+                      if(checkboxes[i].checked) {
+                          json_data.push({'id': checkboxes[i].id, 'email': emails[i].value});
+                      }
+                  }
+                  console.log(json_data);
+                sendEmail(json_data);
            });
        }
     });
 });
 
-function sendEmail() {
+function sendEmail(data) {
     let text = document.getElementById("textsend").value;
     $.ajax({
         url:'/users/send/',
         type:'POST',
         dataType:'json',
-        data: {'text': text},
+        data: {'users': data, 'text': text},
         success: function (response) {
              var taskUrl = `/users/task/${response.task_id}/`;
             var timer = setInterval(function() {

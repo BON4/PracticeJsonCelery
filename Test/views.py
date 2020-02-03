@@ -10,6 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from .tasks import test_task
 from celery import current_app
 from django.template.response import TemplateResponse
+import json
 
 
 class UserDetailView(View):
@@ -96,12 +97,21 @@ class SendEmailView(View):
         form = TextSendForm(request.POST)
 
         if form.is_valid():
-            text = request.POST['text']
-            task = test_task.delay(text)
+            json_data = request.POST.dict()
+            text = json_data['text']
+            del json_data['text']
+            task = 0
+            users_array = []
+            for i in json_data:
+                users_array.append(json_data[i])
+                if(len(users_array) == 2):
+                    print(users_array[0], users_array[1])
+                    task = test_task.delay(users_array[0], users_array[1], text)
+                    users_array.clear()
             data['task_id'] = task.id
             data['task_status'] = task.status
-            print("{0}::::::{1}".format(task.id, task.status))
             return JsonResponse(data)
+
         data['form'] = form
         return JsonResponse(data)
 

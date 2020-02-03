@@ -119,6 +119,18 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'Test.User'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
+
+# EMAIL SETTINGS
+CELERY_EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = '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'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+# EMAIL_USE_SSL = True IF YOOU HAVE ERROR "wrap_socket() got an unexpected keyword argument '_context'" coment this line
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -130,7 +142,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Celery
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+# Redis
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+os.environ.setdefault('FORKED_BY_MULTIPROCESSING', '1')
+
