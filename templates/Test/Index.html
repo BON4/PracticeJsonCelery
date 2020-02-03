@@ -1,4 +1,5 @@
 {% load static %}
+{%load widget_tweaks%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +7,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/other.css' %}">
 </head>
 
 <body>
@@ -18,8 +20,13 @@
         </div>
     </div>
     {% block js %}
+    {% if task_id %}
+        <script src="{% static 'js/other.js' %}"></script>
+    {% endif %}
       <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
       <script src='{% static "js/ajax_test.js" %}'></script>
+
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {% endblock %}
 </body>
 

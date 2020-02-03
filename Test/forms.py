@@ -3,6 +3,10 @@ from django import forms
 from django.core.validators import validate_email
 
 
+class TextSendForm(forms.Form):
+    text = forms.CharField(min_length=1)
+
+
 class UserCreateForm(forms.ModelForm):
     class Meta:
         model = User

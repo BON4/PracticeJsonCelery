@@ -12,6 +12,7 @@ $(document).ready(function () {
        });
    });
 });*/
+
 $(document).ready(function () {
     $.ajax({
        url: '/users/list',
@@ -23,6 +24,7 @@ $(document).ready(function () {
            data.forEach(user =>{
                rows += `
                <tr>
+                    <td><input id="checkbox${user.id}" type="checkbox" name="foo"/></td>
                     <td><input readonly="True" form="myForm" type="text" value="${user.id}"/></td>
                     <td><input id="nameInput${user.id}" form="myForm" type="text" value="${user.name}"/></td>
                     <td><input id="emailInput${user.id}" form="myForm" type="text" value="${user.email}"/></td>
@@ -58,6 +60,8 @@ $(document).ready(function () {
            $('.createBtn').on('click', function (e) {
                userName = document.getElementById('name_create').value;
                userEmail = document.getElementById('email_create').value;
+               document.getElementById('email_create').value = "";
+               document.getElementById('email_create').value = "";
 
                 $.ajax({
                     url: `/users/create/`,
@@ -67,6 +71,7 @@ $(document).ready(function () {
                     success: function (data) {
                        let rows =``;
                        rows = `<tr>
+                                    <td><input id="checkbox${data['id']}" type="checkbox" name="foo"/></td>
                                     <td><input readonly="True" form="myForm" type="text" value="${data['id']}"/></td>
                                     <td><input id="nameInput${data['id']}" form="myForm" type="text" value="${data['name']}"/></td>
                                     <td><input id="emailInput${data['id']}" form="myForm" type="text" value="${data['email']}"/></td>
@@ -85,11 +90,54 @@ $(document).ready(function () {
 
                 });
            });
+           
+           $(".sendBtn").on("click", function () {
+               if(document.getElementById("loader").hidden == true)
+               {
+                   document.getElementById("loader").hidden = false;
+               }
+                sendEmail()
+           });
        }
     });
 });
 
+function sendEmail() {
+    let text = document.getElementById("textsend").value;
+    $.ajax({
+        url:'/users/send/',
+        type:'POST',
+        dataType:'json',
+        data: {'text': text},
+        success: function (response) {
+             var taskUrl = `/users/task/${response.task_id}/`;
+            var timer = setInterval(function() {
+          axios.get(taskUrl)
+          .then(function(response) {
+            var taskStatus = response.data.task_status;
+            if(taskStatus === "SUCCESS")
+            {
+                clearTimer("Message`s has been sent");
+                alert(response.data.results)
+            }
+            else if (taskStatus === 'FAILURE') {
+                clearTimer('An error occurred');
+            }
+          })
+          .catch(function(err){
+            console.log('err', err);
+            clearTimer('An error occurred');
+          });
+            }, 800);
 
+            function clearTimer(message) {
+               document.getElementById("loader").hidden = true;
+               clearInterval(timer);
+               alert(message);
+            }
+        }
+    });
+}
 
 function deleteUser(element) {
     userId = $(element).data('id');
