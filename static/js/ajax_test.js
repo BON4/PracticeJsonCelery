@@ -127,7 +127,6 @@ function sendEmail(data) {
             if(taskStatus === "SUCCESS")
             {
                 clearTimer("Message`s has been sent");
-                alert(response.data.results)
             }
             else if (taskStatus === 'FAILURE') {
                 clearTimer('An error occurred');
@@ -170,9 +169,9 @@ function updateUser(element) {
         data: {'id': userId, 'name': userName, 'email': userEmail},
         dataType: 'json',
         success: function (data) {
-            $(element).data('id').replaceWith(data['id']);
-            $(element).data('name').replaceWith(data['name']);
-            $(element).data('email').replaceWith(data['email']);
+            $(element).data('id').value =data['id'];
+            $(element).data('name').value = data['name'];
+            $(element).data('email').value = data['email'];
         }
 
     });

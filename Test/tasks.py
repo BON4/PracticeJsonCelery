@@ -10,7 +10,7 @@ def test_task(id, email, text):
     send_mail(
         subject='Subject',
         message=text,
-        from_email='myemail@mail.com',
-        recipient_list=[email]
+        from_email='silvia.homam@gmail.com',
+        recipient_list=[email],
     )
 
