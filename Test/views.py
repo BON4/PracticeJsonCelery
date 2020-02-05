@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView, UpdateView
-from .tasks import test_task
+from .tasks import one_sending, mass_sending
 from celery import current_app
 from django.template.response import TemplateResponse
 import json
@@ -101,19 +101,36 @@ class SendEmailView(View):
             text = json_data['text']
             del json_data['text']
             task = 0
+            mail_counter = 0
             users_array = []
             for i in json_data:
                 users_array.append(json_data[i])
-                if(len(users_array) == 2):
-                    print(users_array[0], users_array[1])
-                    task = test_task.delay(users_array[0], users_array[1], text)
-                    users_array.clear()
+
+            users_array_reshaped = [users_array[i:i + 2] for i in range(0, len(users_array), 2)]
+            print(users_array_reshaped)
+            try:
+                if len(users_array_reshaped) == 1:
+                    task = one_sending.delay(users_array_reshaped[0][0], users_array_reshaped[0][1], text)
+                elif len(users_array_reshaped) > 1:
+                    a = [x[1] for x in users_array_reshaped]
+                    print(a)
+                    task = mass_sending.delay(a, text)
+            except:
+                print("Error in task delaying.")
+
+            # for i in json_data: # json_data array [id1, email1, id2, email2]
+            #     users_array.append(json_data[i])
+            #     mail_counter += 1
+            #     if(len(users_array) == 2 & mail_counter == 2):
+            #         print(users_array[0], users_array[1])
+            #         task = test_task.delay(users_array[0], users_array[1], text)
+            #         users_array.clear()
+            #     elif(len(users_array) & mail_counter == len(users_array) & mail_counter > 2):
             data['task_id'] = task.id
             data['task_status'] = task.status
             return JsonResponse(data)
 
         data['form'] = form
         return JsonResponse(data)
-
 
 # Create your views here.
