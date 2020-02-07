@@ -132,6 +132,7 @@ EMAIL_HOST_PASSWORD = password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 f.close()
+print("FFFF")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
