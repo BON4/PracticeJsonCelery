@@ -125,8 +125,8 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'vlad.homam@gmail.com'
-EMAIL_HOST_PASSWORD = 'Difehnsajlbfajnxau170258'
+EMAIL_HOST_USER = 'p@gmail.com'
+EMAIL_HOST_PASSWORD = 'pass'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
