@@ -9,8 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView, UpdateView
 from .tasks import one_sending, mass_sending
 from celery import current_app
-from django.template.response import TemplateResponse
-import json
 
 
 class UserDetailView(View):
@@ -89,8 +87,11 @@ class SendEmailView(View):
         print("{0}::::::{1}".format(task.id, task.status))
         if task.status == 'SUCCESS':
             response_data['results'] = task.get()
+        elif task.status == 'FAILURE':
+                response_data['task_status'] = 'FAILURE'
 
         return JsonResponse(response_data)
+
 
     def post(self, request):
         data = {}
@@ -100,8 +101,7 @@ class SendEmailView(View):
             json_data = request.POST.dict()
             text = json_data['text']
             del json_data['text']
-            task = 0
-            mail_counter = 0
+            task = object
             users_array = []
             for i in json_data:
                 users_array.append(json_data[i])
@@ -118,14 +118,6 @@ class SendEmailView(View):
             except:
                 print("Error in task delaying.")
 
-            # for i in json_data: # json_data array [id1, email1, id2, email2]
-            #     users_array.append(json_data[i])
-            #     mail_counter += 1
-            #     if(len(users_array) == 2 & mail_counter == 2):
-            #         print(users_array[0], users_array[1])
-            #         task = test_task.delay(users_array[0], users_array[1], text)
-            #         users_array.clear()
-            #     elif(len(users_array) & mail_counter == len(users_array) & mail_counter > 2):
             data['task_id'] = task.id
             data['task_status'] = task.status
             return JsonResponse(data)

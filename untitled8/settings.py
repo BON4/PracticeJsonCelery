@@ -122,14 +122,16 @@ AUTH_USER_MODEL = 'Test.User'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 
 # EMAIL GMAIL SMTP
+f = open(r'D:\Gmail_pass.txt')
+email, password = [x.rstrip() for x in f.readlines()]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'vlad.homam@gmail.com'
-EMAIL_HOST_PASSWORD = 'Difehnsajlbfajnxau170258'
+EMAIL_HOST_USER = email
+EMAIL_HOST_PASSWORD = password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
+f.close()
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
